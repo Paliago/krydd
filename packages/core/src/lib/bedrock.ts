@@ -1,9 +1,7 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
-// Initialize Bedrock client for us-east-1 (required for Claude 4.5 Sonnet)
-// eu-north-1 has cross-region inference enabled for Bedrock
+// Bedrock client - cross-region inference enabled in eu-central-1 (Frankfurt)
 export const bedrock = new BedrockRuntimeClient({
-  region: "us-east-1",
   maxAttempts: 3,
 });
 

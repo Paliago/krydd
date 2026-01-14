@@ -1,6 +1,6 @@
 import { Bucket } from "sst/aws/bucket";
 
-// Image bucket for recipe images
+// Image bucket for recipe images (public access)
 export const imagesBucket = new Bucket("Images", {
   name: "krydd-images",
   cors: [
@@ -10,18 +10,23 @@ export const imagesBucket = new Bucket("Images", {
         ? ["http://localhost:5173", "http://localhost:3000"]
         : ["https://krydd.app", "https://*.krydd.app"],
       allowedHeaders: ["*"],
-      maxAge: 86400, // 24 hours
+      maxAge: 86400,
     },
   ],
   access: "public",
 });
 
-// Vector bucket for S3 Vector Search embeddings
-export const vectorBucket = new Bucket("Vectors", {
-  name: "krydd-vectors",
-  access: "private",
+// Vector bucket for S3 Vector Search embeddings (private, from Pulumi)
+const vectorBucket = new aws.s3.Bucket("VectorBucket", {
+  bucket: "krydd-vectors",
+  versioning: { enabled: true },
+  lifecycleRules: [
+    {
+      enabled: true,
+      noncurrentVersionExpiration: { noncurrentDays: 30 },
+    },
+  ],
 });
 
-// Export bucket names
-export const IMAGES_BUCKET_NAME = imagesBucket.name;
-export const VECTORS_BUCKET_NAME = vectorBucket.name;
+// Export for use in other modules via Resource.VectorBucket
+export const vectorBucketName = vectorBucket.bucket;

@@ -3,34 +3,17 @@ import { Table } from "sst/aws/table";
 // Recipes table for storing recipes
 export const recipesTable = new Table("Recipes", {
   fields: {
-    PK: "string",
-    SK: "string",
-    GSI1PK: "string",
-    GSI1SK: "string",
-    GSI2PK: "string",
-    GSI2SK: "string",
-    // Recipe-specific fields
-    id: "string",
-    title: "string",
-    description: "string",
-    ingredients: "list",
-    instructions: "list",
-    prepTime: "number",
-    cookTime: "number",
-    servings: "number",
-    difficulty: "string",
-    cuisine: "string",
-    dietaryTags: "list",
-    imageUrl: "string",
-    authorId: "string",
-    embeddingId: "string",
-    createdAt: "string",
-    updatedAt: "string",
+    pk: "string",
+    sk: "string",
+    gsi1pk: "string",
+    gsi1sk: "string",
+    gsi2pk: "string",
+    gsi2sk: "string",
   },
-  primaryIndex: { hashKey: "PK", rangeKey: "SK" },
+  primaryIndex: { hashKey: "pk", rangeKey: "sk" },
   globalIndexes: {
-    GSI1: { hashKey: "GSI1PK", rangeKey: "GSI1SK" }, // byAuthor
-    GSI2: { hashKey: "GSI2PK", rangeKey: "GSI2SK" }, // byCuisine
+    gsi1: { hashKey: "gsi1pk", rangeKey: "gsi1sk" },
+    gsi2: { hashKey: "gsi2pk", rangeKey: "gsi2sk" },
   },
   stream: "new-and-old-images",
   ttl: "expireAt",
@@ -39,28 +22,15 @@ export const recipesTable = new Table("Recipes", {
 // Meal Plans table for storing meal plans
 export const mealPlansTable = new Table("MealPlans", {
   fields: {
-    PK: "string",
-    SK: "string",
-    GSI1PK: "string",
-    GSI1SK: "string",
-    // Meal plan-specific fields
-    id: "string",
-    userId: "string",
-    weekStartDate: "string",
-    days: "map",
-    goals: "map",
-    preferences: "map",
-    createdAt: "string",
-    updatedAt: "string",
+    pk: "string",
+    sk: "string",
+    gsi1pk: "string",
+    gsi1sk: "string",
   },
-  primaryIndex: { hashKey: "PK", rangeKey: "SK" },
+  primaryIndex: { hashKey: "pk", rangeKey: "sk" },
   globalIndexes: {
-    GSI1: { hashKey: "GSI1PK", rangeKey: "GSI1SK" }, // by week
+    gsi1: { hashKey: "gsi1pk", rangeKey: "gsi1sk" },
   },
   stream: "new-and-old-images",
   ttl: "expireAt",
 });
-
-// Export table names for use in code
-export const RECIPES_TABLE_NAME = recipesTable.name;
-export const MEAL_PLANS_TABLE_NAME = mealPlansTable.name;

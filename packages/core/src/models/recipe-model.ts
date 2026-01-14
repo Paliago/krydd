@@ -16,8 +16,7 @@ import type {
 import { recipeSchema, createRecipeInputSchema } from "./recipe";
 import { v4 as uuidv4 } from "uuid";
 
-const RECIPES_TABLE = Resource.RecipesTable?.name || "Krydd-Recipes";
-const USERS_TABLE = Resource.Table?.name || "Krydd-Users";
+const RECIPES_TABLE = Resource.RecipesTable?.name;
 
 export namespace RecipeModel {
   /**
@@ -40,12 +39,12 @@ export namespace RecipeModel {
     const command = new PutCommand({
       TableName: RECIPES_TABLE,
       Item: {
-        PK: "RECIPE",
-        SK: `RECIPE#${id}`,
-        GSI1PK: `AUTHOR#${data.authorId}`,
-        GSI1SK: `RECIPE#${id}`,
-        GSI2PK: `CUISINE#${data.cuisine || "UNKNOWN"}`,
-        GSI2SK: `RECIPE#${data.createdAt}`,
+        pk: "RECIPE",
+        sk: `RECIPE#${id}`,
+        gsi1pk: `AUTHOR#${data.authorId}`,
+        gsi1sk: `RECIPE#${id}`,
+        gsi2pk: `CUISINE#${data.cuisine || "UNKNOWN"}`,
+        gsi2sk: `RECIPE#${data.createdAt}`,
         ...validated,
       },
     });
@@ -60,7 +59,7 @@ export namespace RecipeModel {
   export const get = async (id: string): Promise<Recipe | null> => {
     const command = new GetCommand({
       TableName: RECIPES_TABLE,
-      Key: { PK: "RECIPE", SK: `RECIPE#${id}` },
+      Key: { pk: "RECIPE", sk: `RECIPE#${id}` },
     });
 
     const result = await ddb.send(command);
@@ -121,7 +120,7 @@ export namespace RecipeModel {
 
     const command = new UpdateCommand({
       TableName: RECIPES_TABLE,
-      Key: { PK: "RECIPE", SK: `RECIPE#${id}` },
+      Key: { pk: "RECIPE", sk: `RECIPE#${id}` },
       UpdateExpression: `SET ${updateExpressions.join(", ")}`,
       ExpressionAttributeNames: expressionAttributeNames,
       ExpressionAttributeValues: expressionAttributeValues,
@@ -137,7 +136,7 @@ export namespace RecipeModel {
   export const remove = async (id: string): Promise<boolean> => {
     const command = new DeleteCommand({
       TableName: RECIPES_TABLE,
-      Key: { PK: "RECIPE", SK: `RECIPE#${id}` },
+      Key: { pk: "RECIPE", sk: `RECIPE#${id}` },
     });
 
     await ddb.send(command);
@@ -154,28 +153,27 @@ export namespace RecipeModel {
   ): Promise<{ recipes: Recipe[]; nextCursor?: string }> => {
     const command = new QueryCommand({
       TableName: RECIPES_TABLE,
-      IndexName: "GSI1",
-      KeyConditionExpression: "GSI1PK = :pk and begins_with(GSI1SK, :sk)",
+      IndexName: "gsi1",
+      KeyConditionExpression: "gsi1pk = :pk and begins_with(gsi1sk, :sk)",
       ExpressionAttributeValues: {
         ":pk": `AUTHOR#${authorId}`,
         ":sk": "RECIPE#",
       },
-      Limit: limit + 1, // Fetch one extra to check for more results
+      Limit: limit + 1,
       ExclusiveStartKey: cursor
-        ? { PK: "RECIPE", SK: cursor }
+        ? { pk: "RECIPE", sk: cursor }
         : undefined,
     });
 
     const result = await ddb.send(command);
     const recipes = (result.Items || []).slice(0, limit).map((item) => {
-      // Remove DynamoDB-specific keys
-      const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...recipe } = item;
+      const { pk, sk, gsi1pk, gsi1sk, gsi2pk, gsi2sk, ...recipe } = item;
       return recipeSchema.parse(recipe);
     });
 
     let nextCursor: string | undefined;
     if (result.LastEvaluatedKey && (result.Items?.length || 0) > limit) {
-      nextCursor = result.LastEvaluatedKey.SK;
+      nextCursor = result.LastEvaluatedKey.sk;
     }
 
     return { recipes, nextCursor };
@@ -191,27 +189,27 @@ export namespace RecipeModel {
   ): Promise<{ recipes: Recipe[]; nextCursor?: string }> => {
     const command = new QueryCommand({
       TableName: RECIPES_TABLE,
-      IndexName: "GSI2",
-      KeyConditionExpression: "GSI2PK = :pk and begins_with(GSI2SK, :sk)",
+      IndexName: "gsi2",
+      KeyConditionExpression: "gsi2pk = :pk and begins_with(gsi2sk, :sk)",
       ExpressionAttributeValues: {
         ":pk": `CUISINE#${cuisine}`,
         ":sk": "RECIPE#",
       },
       Limit: limit + 1,
       ExclusiveStartKey: cursor
-        ? { PK: "RECIPE", SK: cursor }
+        ? { pk: "RECIPE", sk: cursor }
         : undefined,
     });
 
     const result = await ddb.send(command);
     const recipes = (result.Items || []).slice(0, limit).map((item) => {
-      const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...recipe } = item;
+      const { pk, sk, gsi1pk, gsi1sk, gsi2pk, gsi2sk, ...recipe } = item;
       return recipeSchema.parse(recipe);
     });
 
     let nextCursor: string | undefined;
     if (result.LastEvaluatedKey && (result.Items?.length || 0) > limit) {
-      nextCursor = result.LastEvaluatedKey.SK;
+      nextCursor = result.LastEvaluatedKey.sk;
     }
 
     return { recipes, nextCursor };
@@ -235,11 +233,9 @@ export namespace RecipeModel {
       return result.recipes;
     }
 
-    // Default: scan all recipes (not efficient for large datasets)
-    // In production, use a separate GSI or search index
     const command = new QueryCommand({
       TableName: RECIPES_TABLE,
-      KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
+      KeyConditionExpression: "pk = :pk and begins_with(sk, :sk)",
       ExpressionAttributeValues: {
         ":pk": "RECIPE",
         ":sk": "RECIPE#",
@@ -249,7 +245,7 @@ export namespace RecipeModel {
 
     const result = await ddb.send(command);
     const recipes = (result.Items || []).map((item) => {
-      const { PK, SK, GSI1PK, GSI1SK, GSI2PK, GSI2SK, ...recipe } = item;
+      const { pk, sk, gsi1pk, gsi1sk, gsi2pk, gsi2sk, ...recipe } = item;
       return recipeSchema.parse(recipe);
     });
 
@@ -266,7 +262,6 @@ export namespace RecipeModel {
       return [];
     }
 
-    // For batch operations, we'd use BatchGetCommand in production
     const recipes = await Promise.all(
       ids.map((id) => get(id))
     );

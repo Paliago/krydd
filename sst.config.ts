@@ -9,7 +9,7 @@ export default $config({
       home: "aws",
       providers: {
         aws: {
-          region: "eu-north-1", // eu-north-1 with cross-region inference to us-east-1 for Bedrock
+          region: "eu-north-1",
         },
       },
     };
