@@ -1,15 +1,26 @@
 {
-  "name": "monorepo-template",
+  "name": "vision",
   "version": "0.0.0",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "catalog": {
+      "sst": "3.17.13",
+      "zod": "^3.24.2",
+      "tsx": "^4",
+      "vitest": "^2",
+      "@openauthjs/openauth": "^0.4.3",
+      "@types/node": "^22"
+    }
+  },
   "scripts": {},
   "devDependencies": {
+    "@biomejs/biome": "2.0.6",
     "@tsconfig/node22": "^22",
     "typescript": "^5"
   },
-  "dependencies": {
-    "sst": "^3"
+  "volta": {
+    "node": "22.14.0"
   }
 }

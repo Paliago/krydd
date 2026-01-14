@@ -1,16 +1,17 @@
 {
-  "name": "@monorepo-template/scripts",
+  "name": "@vision/scripts",
   "version": "0.0.0",
   "type": "module",
-  "dependencies": {
-    "@monorepo-template/core": "*",
-    "sst": "*"
-  },
   "scripts": {
+    "upload-assets": "sst shell tsx src/upload-assets.ts",
     "shell": "sst shell tsx"
   },
+  "dependencies": {
+    "@vision/core": "*",
+    "sst": "catalog:"
+  },
   "devDependencies": {
-    "@types/node": "^22",
-    "tsx": "^4"
+    "@types/node": "catalog:",
+    "tsx": "catalog:"
   }
 }

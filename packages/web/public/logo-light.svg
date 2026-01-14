@@ -1,0 +1,20 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 189" width="400" height="189">
+	<title>New Project</title>
+	<style>
+		tspan { white-space:pre } 
+		.t0 { font-size: 62px;fill: #8d003f;font-weight: 400;font-family: "EmilysCandy-Regular", "Emilys Candy" } 
+		.t1 { font-size: 62px;fill: #fee3ef;font-weight: 400;font-family: "EmilysCandy-Regular", "Emilys Candy" } 
+	</style>
+	<text id="Temporary Logo" style="transform: matrix(1,0,0,1,27,77)" >
+		<tspan x="0" y="0" class="t0">T</tspan><tspan  y="0" class="t0">e</tspan><tspan  y="0" class="t0">m</tspan><tspan  y="0" class="t0">p</tspan><tspan  y="0" class="t0">o</tspan><tspan  y="0" class="t0">r</tspan><tspan  y="0" class="t0">a</tspan><tspan  y="0" class="t0">r</tspan><tspan  y="0" class="t0">y</tspan><tspan  y="0" class="t0">
+</tspan>
+		<tspan x="0" y="74.4" class="t0">L</tspan><tspan  y="74.4" class="t0">o</tspan><tspan  y="74.4" class="t0">g</tspan><tspan  y="74.4" class="t0">o
+</tspan>
+	</text>
+	<text id="Temporary Logo" style="transform: matrix(1,0,0,1,30,76)" >
+		<tspan x="0" y="0" class="t1">T</tspan><tspan  y="0" class="t1">e</tspan><tspan  y="0" class="t1">m</tspan><tspan  y="0" class="t1">p</tspan><tspan  y="0" class="t1">o</tspan><tspan  y="0" class="t1">r</tspan><tspan  y="0" class="t1">a</tspan><tspan  y="0" class="t1">r</tspan><tspan  y="0" class="t1">y</tspan><tspan  y="0" class="t1">
+</tspan>
+		<tspan x="0" y="74.4" class="t1">L</tspan><tspan  y="74.4" class="t1">o</tspan><tspan  y="74.4" class="t1">g</tspan><tspan  y="74.4" class="t1">o
+</tspan>
+	</text>
+</svg>

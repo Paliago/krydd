@@ -1,7 +1,9 @@
-import { bucket } from "./storage";
+import { auth } from "./auth";
+import { router } from "./router";
+import { table } from "./storage";
 
-export const myApi = new sst.aws.Function("MyApi", {
+export const api = new sst.aws.Function("Api", {
   url: true,
-  link: [bucket],
-  handler: "packages/functions/src/api.handler"
+  handler: "packages/functions/src/api.handler",
+  link: [table, auth, router],
 });

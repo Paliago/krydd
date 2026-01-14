@@ -1,10 +1,17 @@
 {
-  "name": "@monorepo-template/functions",
+  "name": "@vision/functions",
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    "./api": "./src/api.ts"
+  },
   "dependencies": {
-    "@monorepo-template/core": "*",
-    "sst": "*"
+    "@aws-sdk/client-sesv2": "^3.758.0",
+    "@hono/zod-validator": "^0.7.0",
+    "@openauthjs/openauth": "catalog:",
+    "@vision/core": "*",
+    "hono": "^4.7.10",
+    "sst": "catalog:"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8"

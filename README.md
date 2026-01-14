@@ -1,36 +1,40 @@
-# Monorepo Template
+# SST - React Router 7 (framework mode) - OpenAuth - Shadcn/ui - Template
 
-A template to create a monorepo SST v3 project. [Learn more](https://sst.dev/docs/set-up-a-monorepo).
+A template to get started quickly with these technologies:
+
+- SST
+- React Router 7
+- OpenAuth
+- Hono
+- Shadcn/ui
+- Tailwind v4
+- Conform
+- Zod v3
+
+## Specs
+
+- Node.js 22
 
 ## Get started
 
-1. Use this template to [create your own repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+1. Change the name of the project by running `bunx replace-in-file '/vision/g' 'YOUR_APP' '**/*.*' --verbose`
+2. Change the emails that will be used to send login emails in the `infra/email.ts`
+   1. (Optional) if you want to auth providers you need to define correct secrets in the `infra/secrets.ts`
+3. `bun i`
+4. Run `bun sst dev`
+5. cd into `packages/scripts` and run `bun run upload-assets` to add public images
 
-2. Clone the new repo.
+## Go to prod
 
-   ```bash
-   git clone <REPO_URL> MY_APP
-   cd MY_APP
-   ```
+Lots of things to do but most importantly:
 
-3. Rename the files in the project to the name of your app.
-
-   ```bash
-   npx replace-in-file '/monorepo-template/g' 'MY_APP' '**/*.*' --verbose
-   ```
-
-4. Deploy!
-
-   ```bash
-   npm install
-   npx sst deploy
-   ```
-
-5. Optionally, enable [_git push to deploy_](https://sst.dev/docs/console/#autodeploy).
+1. Make you AWS SES production ready
+2. Have real secrets for your auth providers
+3. Set a proper domain on the resources `infra/router.ts` in particular
 
 ## Usage
 
-This template uses [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces). It has 3 packages to start with and you can add more it.
+This template uses [bun Workspaces](https://bun.sh/docs/install/workspaces) and [bun Catalogs](https://bun.sh/docs/install/catalogs). It has 4 packages to start with.
 
 1. `core/`
 
@@ -47,7 +51,7 @@ This template uses [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/work
    That you can use across other packages using.
 
    ```ts
-   import { Example } from "@aws-monorepo/core/example";
+   import { Example } from "@vision/core/example";
 
    Example.hello();
    ```
@@ -55,27 +59,27 @@ This template uses [npm Workspaces](https://docs.npmjs.com/cli/v8/using-npm/work
    We also have [Vitest](https://vitest.dev/) configured for testing this package with the `sst shell` CLI.
 
    ```bash
-   npm test
+   bun test
    ```
 
 2. `functions/`
 
-   This is for your Lambda functions and it uses the `core` package as a local dependency.
+   This packages has the Hono Lambda api and the OpenAuth issuer.
 
 3. `scripts/`
 
-    This is for any scripts that you can run on your SST app using the `sst shell` CLI and [`tsx`](https://www.npmjs.com/package/tsx). For example, you can run the example script using:
+   This is for any scripts that you can run on your SST app using the `sst shell` CLI and [`tsx`](https://www.npmjs.com/package/tsx). For example, you can run the asset upload script using:
 
    ```bash
-   npm run shell src/example.ts
+   bun run shell src/upload-assets.ts
    ```
+
+4. `web/`
+
+   This is the React Router application. Using the OpenAuth for authentication and the functions backend api with tanstack query.
 
 ### Infrastructure
 
 The `infra/` directory allows you to logically split the infrastructure of your app into separate files. This can be helpful as your app grows.
 
 In the template, we have an `api.ts`, and `storage.ts`. These export the created resources. And are imported in the `sst.config.ts`.
-
----
-
-**Join our community** [Discord](https://sst.dev/discord) | [YouTube](https://www.youtube.com/c/sst-dev) | [X.com](https://x.com/SST_dev)
