@@ -1,5 +1,5 @@
 {
-  "name": "@vision/core",
+  "name": "@krydd/core",
   "type": "module",
   "version": "0.0.0",
   "scripts": {
@@ -9,19 +9,23 @@
     "./*": ["./src/*/index.ts", "./src/*.ts"],
     "./*/schema": "./src/*/schema.ts",
     "./subjects": "./src/subjects.ts",
-    "./guards": "./src/guards.ts"
+    "./guards": "./src/guards.ts",
+    "./models": "./src/models/index.ts",
+    "./models/*": "./src/models/*.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.751.0",
     "@aws-sdk/client-dynamodb": "^3.751.0",
     "@aws-sdk/client-s3": "^3.750.0",
     "@aws-sdk/lib-dynamodb": "^3.751.0",
     "@aws-sdk/lib-storage": "^3.750.0",
     "@aws-sdk/s3-request-presigner": "^3.750.0",
     "sst": "catalog:",
-    "ulid": "^3.0.1",
+    "uuid": "^11.0.0",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@types/uuid": "^10.0.0",
     "vitest": "catalog:"
   }
 }

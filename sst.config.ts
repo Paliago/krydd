@@ -3,13 +3,13 @@
 export default $config({
   app(input) {
     return {
-      name: "vision",
+      name: "krydd",
       removal: input?.stage === "production" ? "retain" : "remove",
       protect: ["production"].includes(input?.stage),
       home: "aws",
       providers: {
         aws: {
-          region: "eu-north-1",
+          region: "us-east-1", // Required for Bedrock and S3 Vector Search
         },
       },
     };
@@ -20,7 +20,9 @@ export default $config({
       args.architecture ??= "arm64";
     });
 
+    // Import infrastructure modules
     await import("./infra/secret");
+    await import("./infra/tables");
     await import("./infra/storage");
     await import("./infra/router");
     await import("./infra/email");
@@ -28,6 +30,7 @@ export default $config({
     await import("./infra/api");
     await import("./infra/web");
 
+    // Resource group for better organization in AWS Console
     new aws.resourcegroups.Group("Group", {
       name: `${$app.stage}-${$app.name}`,
       resourceQuery: {

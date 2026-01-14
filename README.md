@@ -1,85 +1,246 @@
-# SST - React Router 7 (framework mode) - OpenAuth - Shadcn/ui - Template
+# Krydd - AI-Powered Recipe App
 
-A template to get started quickly with these technologies:
+A modern recipe application built with AWS primitives using SST v3 + Pulumi, leveraging AWS AI services for intelligent features.
 
-- SST
-- React Router 7
-- OpenAuth
-- Hono
-- Shadcn/ui
-- Tailwind v4
-- Conform
-- Zod v3
+## Features
 
-## Specs
+- 🍳 **Recipe Management** - Create, read, update, and delete recipes with rich metadata
+- 🔍 **Semantic Search** - S3 Vector Search for intelligent recipe discovery
+- 📅 **Meal Planning** - Weekly meal planning with AI assistance
+- 🤖 **AI Assistant** - Claude 4 Sonnet powered recipe suggestions and cooking tips
+- 🔐 **Authentication** - Secure user authentication with email and GitHub OAuth
+- 📱 **Responsive Frontend** - React Router-based SPA
 
-- Node.js 22
+## Architecture
 
-## Get started
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Krydd Recipe App                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐    ┌─────────────────────────────────────┐   │
+│  │   Frontend   │───▶│     Monolithic Hono API             │   │
+│  │  (React)     │    │  ┌─────────────────────────────┐    │   │
+│  └──────────────┘    │  │  Single Lambda + Function   │    │   │
+│                      │  │  URL (sst.aws.Function)     │    │   │
+│  ┌──────────────┐    │  │                             │    │   │
+│  │   Auth       │◀───│  │  Routes:                    │    │   │
+│  │  (sst.auth)  │    │  │  - /api/auth/*  (sst.auth)  │    │   │
+│  └──────────────┘    │  │  - /api/recipes/*           │    │   │
+│                      │  │  - /api/search/*            │    │   │
+│                      │  │  - /api/meal-plan/*         │    │   │
+│                      │  │  - /api/chat/* (AI)         │    │   │
+│                      │  └─────────────────────────────┘    │   │
+│                      └─────────────────────────────────────┘   │
+│                                    │                            │
+│         ┌──────────────────────────┼────────────────────────┐  │
+│         ▼                          ▼                        ▼  │
+│   ┌──────────────┐    ┌──────────────────┐    ┌───────────┐   │
+│   │  DynamoDB    │    │    Bedrock       │    │  S3       │   │
+│   │  Tables      │    │  ┌────────────┐  │    │  Buckets  │   │
+│   │  - Recipes   │    │  │ Claude 4   │  │    │  - Images │   │
+│   │  - MealPlans │    │  │ Sonnet     │  │    │  - Vectors│   │
+│   │  - Users     │    │  └────────────┘  │    └───────────┘   │
+│   └──────────────┘    │  ┌────────────┐  │                    │
+│                       │  │ S3 Vector  │  │                    │
+│                       │  │ Search     │  │                    │
+│                       │  └────────────┘  │                    │
+│                       └──────────────────┘                    │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
 
-1. Change the name of the project by running `bunx replace-in-file '/vision/g' 'YOUR_APP' '**/*.*' --verbose`
-2. Change the emails that will be used to send login emails in the `infra/email.ts`
-   1. (Optional) if you want to auth providers you need to define correct secrets in the `infra/secrets.ts`
-3. `bun i`
-4. Run `bun sst dev`
-5. cd into `packages/scripts` and run `bun run upload-assets` to add public images
+## Tech Stack
 
-## Go to prod
+| Category | Technology |
+|----------|------------|
+| Framework | SST v3 + Pulumi |
+| API | Hono (single Lambda) |
+| Database | DynamoDB |
+| Storage | S3 (Images + Vector Store) |
+| Auth | sst.auth (OpenAuth) |
+| AI | Bedrock + Claude 4 Sonnet |
+| Vector Search | S3 Vector Search + Titan Embeddings |
+| Frontend | React Router v7 |
+| State | TanStack Query |
+| Validation | Zod |
 
-Lots of things to do but most importantly:
+## Getting Started
 
-1. Make you AWS SES production ready
-2. Have real secrets for your auth providers
-3. Set a proper domain on the resources `infra/router.ts` in particular
+### Prerequisites
 
-## Usage
+- Node.js 22+
+- AWS CLI configured
+- Bun or npm
 
-This template uses [bun Workspaces](https://bun.sh/docs/install/workspaces) and [bun Catalogs](https://bun.sh/docs/install/catalogs). It has 4 packages to start with.
+### Installation
 
-1. `core/`
+```bash
+# Clone the repository
+cd krydd
 
-   This is for any shared code. It's defined as modules. For example, there's the `Example` module.
+# Install dependencies
+npm install
 
-   ```ts
-   export module Example {
-     export function hello() {
-       return "Hello, world!";
-     }
-   }
-   ```
+# Set up environment variables
+cp .env.example .env.local
 
-   That you can use across other packages using.
+# Start development server
+npm run dev
+```
 
-   ```ts
-   import { Example } from "@vision/core/example";
+### Environment Variables
 
-   Example.hello();
-   ```
+```bash
+# AWS Configuration
+AWS_REGION=us-east-1
 
-   We also have [Vitest](https://vitest.dev/) configured for testing this package with the `sst shell` CLI.
+# Auth Configuration (for GitHub OAuth)
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
 
-   ```bash
-   bun test
-   ```
+# Email (optional, for email auth)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+```
 
-2. `functions/`
+## Project Structure
 
-   This packages has the Hono Lambda api and the OpenAuth issuer.
+```
+krydd/
+├── sst.config.ts              # SST configuration
+├── package.json               # Root package.json
+├── infra/                     # Infrastructure definitions
+│   ├── auth.ts               # Auth configuration
+│   ├── api.ts                # API function
+│   ├── tables.ts             # DynamoDB tables
+│   ├── storage.ts            # S3 buckets
+│   └── web.ts                # Frontend deployment
+├── packages/
+│   ├── core/                 # Shared code
+│   │   └── src/
+│   │       ├── models/       # Data models
+│   │       │   ├── recipe.ts
+│   │       │   └── meal-plan.ts
+│   │       └── lib/          # Utilities
+│   │           ├── ddb.ts
+│   │           ├── s3.ts
+│   │           ├── bedrock.ts
+│   │           └── vector-search.ts
+│   ├── functions/            # Lambda functions
+│   │   └── src/
+│   │       ├── api.ts        # Main API entry
+│   │       └── api/          # API routes
+│   │           ├── recipes.ts
+│   │           ├── search.ts
+│   │           ├── meal-plan.ts
+│   │           └── chat.ts
+│   └── web/                  # React frontend
+│       ├── app/
+│       │   ├── routes/       # Page routes
+│       │   ├── components/   # UI components
+│       │   └── lib/          # Frontend utilities
+│       └── package.json
+└── bun.lock                  # Lock file
+```
 
-3. `scripts/`
+## API Endpoints
 
-   This is for any scripts that you can run on your SST app using the `sst shell` CLI and [`tsx`](https://www.npmjs.com/package/tsx). For example, you can run the asset upload script using:
+### Recipes
 
-   ```bash
-   bun run shell src/upload-assets.ts
-   ```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/recipes` | List recipes |
+| GET | `/api/recipes/:id` | Get single recipe |
+| POST | `/api/recipes` | Create recipe |
+| PUT | `/api/recipes/:id` | Update recipe |
+| DELETE | `/api/recipes/:id` | Delete recipe |
+| GET | `/api/recipes/author/:authorId` | Get recipes by author |
+| GET | `/api/recipes/cuisine/:cuisine` | Get recipes by cuisine |
 
-4. `web/`
+### Search
 
-   This is the React Router application. Using the OpenAuth for authentication and the functions backend api with tanstack query.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/search?q=...` | Text search |
+| POST | `/api/search` | Semantic search |
+| POST | `/api/search/ingredients` | Search by ingredients |
+| GET | `/api/search/recommendations` | Get recommendations |
 
-### Infrastructure
+### Meal Plans
 
-The `infra/` directory allows you to logically split the infrastructure of your app into separate files. This can be helpful as your app grows.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/meal-plan` | List meal plans |
+| GET | `/api/meal-plan/:weekStart` | Get meal plan for week |
+| POST | `/api/meal-plan` | Create meal plan |
+| PUT | `/api/meal-plan/:weekStart` | Update meal plan |
+| PATCH | `/api/meal-plan/:weekStart/days` | Update specific days |
+| DELETE | `/api/meal-plan/:id` | Delete meal plan |
 
-In the template, we have an `api.ts`, and `storage.ts`. These export the created resources. And are imported in the `sst.config.ts`.
+### Chat
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/chat` | AI chat assistant |
+| POST | `/api/chat/search` | AI-powered search |
+| POST | `/api/chat/suggest` | Recipe suggestions |
+| POST | `/api/chat/meal-plan` | Generate meal plan |
+| POST | `/api/chat/substitutions` | Ingredient substitutions |
+
+## DynamoDB Schema
+
+### Recipes Table
+
+```
+PK: "RECIPE"
+SK: "RECIPE#<id>"
+GSI1PK: "AUTHOR#<authorId>"
+GSI1SK: "RECIPE#<id>"
+GSI2PK: "CUISINE#<cuisine>"
+GSI2SK: "RECIPE#<createdAt>"
+
+Fields: id, title, description, ingredients, instructions,
+        prepTime, cookTime, servings, difficulty, cuisine,
+        dietaryTags, imageUrl, authorId, createdAt, updatedAt
+```
+
+### MealPlans Table
+
+```
+PK: "USER#<userId>"
+SK: "MEALPLAN#<weekStartDate>"
+GSI1PK: "MEALPLAN#<weekStartDate>"
+GSI1SK: "USER#<userId>"
+
+Fields: id, userId, weekStartDate, days, goals, preferences,
+        createdAt, updatedAt
+```
+
+## Deployment
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Production
+
+```bash
+npm run deploy --stage production
+```
+
+## AWS Services Used
+
+- **Lambda** - Serverless compute for API
+- **DynamoDB** - NoSQL database for recipes and meal plans
+- **S3** - Object storage for images and vector embeddings
+- **Bedrock** - AI/ML for Claude 4 and Titan embeddings
+- **Cognito** - User authentication (via sst.auth)
+- **API Gateway** - Function URL for API access
+- **CloudFront** - CDN for frontend and assets
+
+## License
+
+MIT

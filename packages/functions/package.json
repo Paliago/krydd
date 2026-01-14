@@ -1,5 +1,5 @@
 {
-  "name": "@vision/functions",
+  "name": "@krydd/functions",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -9,7 +9,7 @@
     "@aws-sdk/client-sesv2": "^3.758.0",
     "@hono/zod-validator": "^0.7.0",
     "@openauthjs/openauth": "catalog:",
-    "@vision/core": "*",
+    "@krydd/core": "*",
     "hono": "^4.7.10",
     "sst": "catalog:"
   },

@@ -3,5 +3,11 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@krydd/core/*": ["./src/*"]
+    }
   },
+  "include": ["src/**/*", "*.ts", ".sst/**/*.ts"],
+  "exclude": ["node_modules"]
 }

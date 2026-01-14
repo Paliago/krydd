@@ -7,6 +7,7 @@ new sst.aws.React("React", {
   link: [auth, api],
   environment: {
     VITE_AUTH_URL: auth.url,
+    VITE_API_URL: api.url,
     VITE_SITE_URL: $dev ? "http://localhost:5173" : router.url,
   },
   router: {

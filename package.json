@@ -1,6 +1,7 @@
 {
-  "name": "vision",
+  "name": "krydd",
   "version": "0.0.0",
+  "description": "AI-powered recipe app with semantic search and meal planning",
   "workspaces": {
     "packages": [
       "packages/*"
@@ -11,10 +12,16 @@
       "tsx": "^4",
       "vitest": "^2",
       "@openauthjs/openauth": "^0.4.3",
-      "@types/node": "^22"
+      "@types/node": "^22",
+      "uuid": "^11.0.0"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "dev": "npx sst dev",
+    "deploy": "npx sst deploy",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.0.6",
     "@tsconfig/node22": "^22",
@@ -22,5 +29,15 @@
   },
   "volta": {
     "node": "22.14.0"
-  }
+  },
+  "keywords": [
+    "recipes",
+    "meal-planning",
+    "ai",
+    "bedrock",
+    "sst",
+    "dynamodb"
+  ],
+  "author": "Krydd Team",
+  "license": "MIT"
 }
