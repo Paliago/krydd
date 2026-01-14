@@ -9,7 +9,7 @@ export default $config({
       home: "aws",
       providers: {
         aws: {
-          region: "us-east-1", // Required for Bedrock and S3 Vector Search
+          region: "eu-north-1", // eu-north-1 with cross-region inference to us-east-1 for Bedrock
         },
       },
     };

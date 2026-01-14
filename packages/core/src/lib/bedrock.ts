@@ -1,22 +1,16 @@
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-  InvokeModelWithResponseStreamCommand,
-} from "@aws-sdk/client-bedrock-runtime";
+import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
-// Initialize Bedrock client for us-east-1 (required for Claude 4)
+// Initialize Bedrock client for us-east-1 (required for Claude 4.5 Sonnet)
+// eu-north-1 has cross-region inference enabled for Bedrock
 export const bedrock = new BedrockRuntimeClient({
   region: "us-east-1",
   maxAttempts: 3,
 });
 
-// Claude 4 Sonnet model ID
-export const CLAUDE_4_SONNET = "anthropic.claude-4-sonnet-20250514";
+// Claude 4.5 Sonnet model ID
+export const CLAUDE_4_5_SONNET = "anthropic.claude-sonnet-4-2025-02-19";
 
-// Claude 4 Haiku model ID (faster, cheaper)
-export const CLAUDE_4_HAIKU = "anthropic.claude-4-haiku-20250514";
-
-// Invoke Claude model with a prompt
+// Invoke Claude 4.5 model with a prompt
 export async function invokeClaude(
   prompt: string,
   options: {
@@ -27,21 +21,16 @@ export async function invokeClaude(
   } = {}
 ): Promise<string> {
   const {
-    modelId = CLAUDE_4_SONNET,
+    modelId = CLAUDE_4_5_SONNET,
     maxTokens = 4096,
     temperature = 0.7,
     systemPrompt,
   } = options;
 
-  const messages = systemPrompt
-    ? [
-        { role: "user", content: prompt },
-      ]
-    : [{ role: "user", content: prompt }];
+  const messages = [{ role: "user", content: prompt }];
 
-  // If system prompt is provided, use the newer API format
   const body: Record<string, unknown> = {
-    anthropic_version: "bedrock-2025-01-20",
+    anthropic_version: "bedrock-2025-02-19",
     max_tokens: maxTokens,
     temperature,
     messages,
@@ -90,7 +79,7 @@ export async function invokeClaudeWithTools(
   toolCalls?: Array<{ name: string; input: Record<string, unknown> }>;
 }> {
   const {
-    modelId = CLAUDE_4_SONNET,
+    modelId = CLAUDE_4_5_SONNET,
     maxTokens = 4096,
     temperature = 0.7,
     systemPrompt,
@@ -99,7 +88,7 @@ export async function invokeClaudeWithTools(
   const messages = [{ role: "user", content: prompt }];
 
   const body: Record<string, unknown> = {
-    anthropic_version: "bedrock-2025-01-20",
+    anthropic_version: "bedrock-2025-02-19",
     max_tokens: maxTokens,
     temperature,
     messages,
